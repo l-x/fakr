@@ -2,6 +2,7 @@ import jinja2
 import unidecode
 import random
 import uuid
+import time
 
 custom_filters = dict(
     ascii=lambda value: unidecode.unidecode(str(value)),
@@ -15,7 +16,7 @@ custom_filters = dict(
 custom_globals=dict(
     translate=lambda value, **dictionary: dictionary[value],
     uuid4=lambda: str(uuid.uuid4()),
-    choice=lambda *data: random.choice(data)
+    unixtime=time.time
 )
 
 

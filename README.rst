@@ -41,7 +41,7 @@ Custom functions:
 
 - ``translate``
 - ``uuid4``: Returns a new UUIDv4 on every call (i. e. ``{{uuid4()}}``)
-- ``choice``: Returns a random choice of the given arguments, (i. e. ``{{choice('fu', 'bar', 'herp', 'derp')}}``)
+- ``unixtime``: Returns a the current unixtime as float in seconds, (i. e. ``{{unixtime()}}``)
 
 
 
