@@ -14,9 +14,6 @@ class TemplatedMapping(Mapping):
     def __getitem__(self, key: str) -> str:
         return self.__render(self.__data[key], self.__data)
 
-    def __setitem__(self, key, value) -> None:
-        self.__data[key]=value
-
     def __iter__(self) -> Iterator:
         return iter(self.__data)
 

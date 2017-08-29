@@ -1,5 +1,8 @@
 all:
 
+tests:
+	nose2
+
 sdist:
 	python setup.py sdist
 
