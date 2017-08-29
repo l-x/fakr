@@ -23,7 +23,7 @@ class Jinja2Renderer:
         if self.__tpl_prefix is None:
             return self.__get_template_object(value).render(**data)
 
-        if value.startswith(self.__tpl_prefix):
+        if str(value).startswith(self.__tpl_prefix):
             return self.__render(
                 self.__get_template_object(value[len(self.__tpl_prefix):]).render(**data),
                 mapping,

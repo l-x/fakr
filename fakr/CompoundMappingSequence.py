@@ -1,6 +1,7 @@
 from collections import Sequence, Mapping
 from functools import reduce
 from operator import mul
+from hashlib import md5
 
 
 class CompoundMappingSequence(Sequence):
@@ -15,9 +16,21 @@ class CompoundMappingSequence(Sequence):
     def __len__(self) -> int:
         return self.__len
 
+    def __create_guid(self, id: int) -> str:
+        hexdigest=md5(str(id).encode()).hexdigest()
+
+        return '-'.join([
+            hexdigest[0:8],
+            hexdigest[8:12],
+            hexdigest[12:16],
+            hexdigest[16:20],
+            hexdigest[20:32]
+        ])
+
     def __getitem__(self, index: int) -> Mapping:
         d = dict(
-            id=str(index),
+            id=index,
+            guid=self.__create_guid(index),
         )
 
         for key, i in enumerate(self.__calculate_indices(index)):
