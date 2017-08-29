@@ -18,7 +18,7 @@ requirements = [
 setup(
     name=package_name,
     version=version,
-    description='Random data generator',
+    description='Random data generator for the command line',
     long_description=readme,
     classifiers=[
         'Development Status :: 3 - Alpha',
