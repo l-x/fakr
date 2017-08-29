@@ -32,7 +32,7 @@ setup(
         'Topic :: Software Development :: Testing',
         'Topic :: Software Development :: Testing :: Traffic Generation',
     ],
-    keywords='fake template random list data generator Jinja2' + package_name,
+    keywords='fake template random list data generator Jinja2 ' + package_name,
     url=repo_url,
     author=author,
     author_email=author_email,
