@@ -1,7 +1,10 @@
 all:
 
 tests:
-	nose2
+	python -m nose2 -v --log-capture test
+
+coverage:
+	python -m nose2 -v --log-capture --with-coverage --coverage fakr -s test
 
 sdist:
 	python setup.py sdist

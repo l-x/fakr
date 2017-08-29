@@ -38,7 +38,7 @@ setup(
     author_email=author_email,
     license='MIT',
     install_requires=requirements,
-    tests_require=['nose2'],
+    tests_require=['nose2', 'cov-core'],
     test_suite='nose2.collector.collector',
     entry_points={
         'console_scripts': ['{n}={n}.Cli:Cli.main'.format(n=package_name)],
