@@ -4,8 +4,8 @@
 .. image:: https://codecov.io/gh/l-x/fakr/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/l-x/fakr
 
-fakr - A random data generator
-==============================
+fakr - 🖕 Random data, fakrs!
+=============================
 
 Installation
 ------------

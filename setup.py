@@ -37,7 +37,7 @@ setup(
     author=author,
     author_email=author_email,
     license='MIT',
-    install_requires=requirements,
+    install_requires=open('requirements.txt').read().lstrip().rstrip().split('\n'),
     tests_require=['nose2', 'cov-core'],
     test_suite='nose2.collector.collector',
     entry_points={
