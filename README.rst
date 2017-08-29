@@ -26,7 +26,7 @@ Basic Usage
 
 >>> echo "{{row}},{{row%100}},{{firstname}},{{lastname}},{{email}}" | fakr --count 1000
 
->>> curl "https://raw.githubusercontent.com/l-x/fakr/master/examples/templates/vdard.tpl" | fakr -c 100000 > vcard.vcf
+>>> curl "https://raw.githubusercontent.com/l-x/fakr/master/examples/templates/vcard.tpl" | fakr -c 100000 > vcard.vcf
 
 
 Templates
