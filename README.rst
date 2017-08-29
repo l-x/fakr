@@ -4,8 +4,8 @@
 .. image:: https://codecov.io/gh/l-x/fakr/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/l-x/fakr
 
-fakr - 🖕 Random data, fakrs!
-=============================
+Random data, fakrs!
+===================
 
 Installation
 ------------
@@ -25,6 +25,8 @@ Basic Usage
 >>> fakr --help
 
 >>> echo "{{row}},{{row%100}},{{firstname}},{{lastname}},{{email}}" | fakr --count 1000
+
+>>> curl "https://raw.githubusercontent.com/l-x/fakr/master/examples/templates/vdard.tpl" | fakr -c 100000 > vcard.vcf
 
 
 Templates
