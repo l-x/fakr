@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/l-x/fakr.svg?branch=master
+    :target: https://travis-ci.org/l-x/fakr
+
 fakr - A random data generator
 ==============================
 
