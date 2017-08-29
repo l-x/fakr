@@ -1,0 +1,3 @@
+unidecode
+jinja2
+nose2
