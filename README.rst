@@ -11,7 +11,7 @@
     :target: https://codecov.io/gh/l-x/fakr
 
 
-s
+
 Random data, fakrs!
 ===================
 
