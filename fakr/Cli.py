@@ -46,11 +46,10 @@ class Cli:
             print('{}: {} unique entries'.format(args['vocabulary'].name, len(vocabulary)))
             exit(0)
 
-        template = args['template'].read()
         renderer = Jinja2Renderer(j2env, template_prefix=None)
 
         try:
-            Cli(vocabulary, renderer).__real_main(template, args['count'], args['delay'])
+            Cli(vocabulary, renderer).__real_main(sys.stdin.read(), args['count'], args['delay'])
         except KeyboardInterrupt:
             exit(0)
         except jinja2.exceptions.TemplateError as e:
@@ -102,13 +101,6 @@ class Cli:
         meta_group.add_argument('-i', '--info',
                             action='store_true',
                             help='show some vocabulary information and exit'
-                            )
-
-        parser.add_argument('-t', '--template',
-                            metavar='FILENAME',
-                            type=argparse.FileType('r'),
-                            help='Path to the template file. If omitted the template is read from STDIN',
-                            default=sys.stdin
                             )
 
         parser.add_argument('-v', '--vocabulary',
