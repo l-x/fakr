@@ -6,13 +6,16 @@ tests:
 coverage:
 	python -m nose2 -v --log-capture --with-coverage --coverage fakr -s test
 
-sdist:
-	python setup.py sdist
+dist:
+	python setup.py sdist bdist_wheel
 
-upload-test: sdist
+upload-test: dist
 	twine upload -si DEEFD827 --skip-existing -r pypitest dist/*
 
-upload-rel: sdist
+upload-rel: dist
 	twine upload -si DEEFD827 --skip-existing -r pypi dist/*
+
+clean:
+	rm -rf dist build __pycache__ .coverage fakr.egg-info 
 
 force:
