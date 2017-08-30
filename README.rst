@@ -1,32 +1,67 @@
+.. image:: https://beerpay.io/l-x/fakr/badge.svg?style=beer
+   :target: https://beerpay.io/l-x/fakr
+
+.. image:: https://badges.gitter.im/random-data-fakrs/Lobby.svg
+    :target: https://gitter.im/random-data-fakrs/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-
+
 .. image:: https://travis-ci.org/l-x/fakr.svg?branch=master
     :target: https://travis-ci.org/l-x/fakr
 
 .. image:: https://codecov.io/gh/l-x/fakr/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/l-x/fakr
+    :target: https://codecov.io/gh/l-x/fakr
 
+
+s
 Random data, fakrs!
 ===================
+
+*fakr* reads a Jinja2 Template from ``stdin``, renders it using a vocabulary and writes the result to ``stdout``. It's as simple as that...
 
 Installation
 ------------
 
-From pypi:
-
->>> pip install fakr
-
-From repo:
-
->>> git clone https://github.com/l-x/fakr.git && pip install -e fakr/
-
+``$ pip install fakr``
 
 Basic Usage
 -----------
 
->>> fakr --help
+``$ fakr --help``
 
->>> echo "{{row}},{{row%100}},{{firstname}},{{lastname}},{{email}}" | fakr --count 1000
+Examples
+--------
 
->>> curl "https://raw.githubusercontent.com/l-x/fakr/master/examples/templates/vcard.tpl" | fakr -c 100000 > vcard.vcf
+Generate a simple csv file with 100k rows
+
+::
+
+ $ echo "{{row}},{{row%100}},{{firstname}},{{lastname}},{{email}}" \
+   | fakr --count 100000``
+
+
+Use a file for complex template
+
+::
+
+  $ cat examples/templates/vcard.tpl \
+    | fakr --count 1000
+
+
+Make a http request using curl:
+
+::
+
+  $ echo "company={{company|urlencode}}&city={{city|urlencode}}"  \
+    | fakr -c1 \
+    | curl httpbin.org/post -d @-
+
+
+
+Write data to a redis server:
+
+::
+
+  $ echo 'firstname \"{{firstname}}\" lastname \"{{lastname}}\" email \"{{email}}\"' \
+    | fakr | xargs -i redis-cli HMSET {}``
 
 
 Templates
@@ -34,7 +69,7 @@ Templates
 
 The templates you use for data generation are plain `Jinja2 Templates`_. See their reference for detailed information.
 
-There are a few custom filters and function for use with fakr:
+There are a few custom filters, functions and variables for use with fakr:
 
 Custom filters:
 
@@ -51,6 +86,11 @@ Custom functions:
 - ``uuid4``: Returns a new UUIDv4 on every call (i. e. ``{{uuid4()}}``)
 - ``unixtime``: Returns a the current unixtime as float in seconds, (i. e. ``{{unixtime()}}``)
 
+Fixed (vocabulary independent) variables:
+
+- ``row``: The row (starting from 0) of the current dataset
+- ``id``: The id or sequence number of the current dataset
+- ``guid``: The representation of the ``id`` in a uuid-like fashion
 
 
 .. _`Jinja2 Templates`: http://jinja.pocoo.org/docs/2.9/templates/
