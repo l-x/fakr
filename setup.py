@@ -41,7 +41,7 @@ setup(
     tests_require=['nose2', 'cov-core'],
     test_suite='nose2.collector.collector',
     entry_points={
-        'console_scripts': ['{n}={n}.Cli:Cli.main'.format(n=package_name)],
+        'console_scripts': ['{n}={n}.cli:main'.format(n=package_name)],
     },
     include_package_data=True,
     zip_safe=False,

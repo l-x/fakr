@@ -1,0 +1,95 @@
+from collections import Mapping, Sequence
+import argparse
+import sys
+import os
+from .Jinja2Renderer import Jinja2Renderer
+from .CompoundMappingSequence import CompoundMappingSequence
+from .TemplatedMapping import templated_mapping
+from .jinja import environment
+import jinja2.exceptions
+from . import version, package_name
+from .Generator import Generator
+
+ENV_FAKR_VOCABUALRY= 'FAKR_VOCABULARY'
+
+
+def main():
+    j2env = environment()
+    args = __parse_args()
+
+    vocabulary = load_vocabulary(args['vocabulary'], j2env)
+
+    if args['list'] is True:
+        print('\n'.join(sorted([v for v in list(vocabulary[0].keys()) + ['row']])))
+        exit(0)
+
+    if args['info'] is True:
+        print('{}: {} unique entries'.format(args['vocabulary'].name, len(vocabulary)))
+        exit(0)
+
+    try:
+        generator = Generator(Jinja2Renderer(j2env, template_prefix=None), vocabulary, sys.stdin.read())
+        for item in generator(args['count'], args['delay']):
+            sys.stdout.write(item + '\n')
+    except KeyboardInterrupt:
+        exit(0)
+    except jinja2.exceptions.TemplateError as e:
+        sys.stderr.write('There was a problem with your templates: {}'.format(e.message))
+    except OSError as e:
+        sys.stderr.write(e.strerror)
+
+
+def load_vocabulary(fp, j2env) -> Sequence:
+    import json
+    partitions=json.load(fp)
+    mapping_factory=templated_mapping(Jinja2Renderer(j2env, template_prefix='%%'))
+    return CompoundMappingSequence(mapping_factory, *partitions)
+
+
+def __parse_args() -> Mapping:
+    parser = argparse.ArgumentParser(
+        prog=package_name,
+        description='''
+            {} reads a jinja2 template from STDIN or from a file, renders it with random values from the
+            builtin us_top1000 vocabulary or from a custom file and writes the result to STDOUT
+        '''.format(package_name)
+    )
+
+    meta_group=parser.add_argument_group('Information')
+
+    meta_group.add_argument('--version',
+                        action='version',
+                        version='%(prog)s {}'.format(version)
+                        )
+
+    parser.add_argument('-c', '--count',
+                        metavar='COUNT',
+                        type=int,
+                        default=-1,
+                        help='Number of datasets to generate, defaults to 0 (unlimited)'
+                        )
+
+    parser.add_argument('-d', '--delay',
+                        metavar='SECONDS',
+                        type=float,
+                        default=0,
+                        help='Wait SECONDS between dataset generation, defaults to 0 (no waiting)'
+                        )
+
+    meta_group.add_argument('-l', '--list',
+                        action='store_true',
+                        help='show the available variables and exit'
+                        )
+
+    meta_group.add_argument('-i', '--info',
+                        action='store_true',
+                        help='show some vocabulary information and exit'
+                        )
+
+    parser.add_argument('-v', '--vocabulary',
+                        metavar='FILENAME',
+                        type=argparse.FileType('r'),
+                        help='Path to the vocabulary file. Defaults to the builtin us_top1000 vocabulary. This setting overrides the vocabulary selection via the environment variable FAKR_VOCABULARY',
+                        default=os.getenv(ENV_FAKR_VOCABUALRY, os.path.dirname(os.path.realpath(__file__)) + '/vocabularies/us_top1000.json'))
+
+    return vars(parser.parse_args())
