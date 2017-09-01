@@ -11,20 +11,22 @@ from . import version, package_name
 from .Generator import Generator
 
 ENV_FAKR_VOCABUALRY= 'FAKR_VOCABULARY'
+ENV_FAKR_MIXIN= 'FAKR_MIXIN'
 
 
 def main():
     j2env = environment()
     args = __parse_args()
 
-    vocabulary = load_vocabulary(args['vocabulary'], j2env)
+    vocabulary_fps=[args['vocabulary']] + args['mixin']
+    vocabulary = load_vocabulary(j2env, *vocabulary_fps)
 
     if args['list'] is True:
         print('\n'.join(sorted([v for v in list(vocabulary[0].keys()) + ['row']])))
         exit(0)
 
     if args['info'] is True:
-        print('{}: {} unique entries'.format(args['vocabulary'].name, len(vocabulary)))
+        print('{} unique entries in\n{}'.format(len(vocabulary), '\n'.join(['\t- ' + os.path.realpath(fp.name) for fp in vocabulary_fps])))
         exit(0)
 
     try:
@@ -39,9 +41,12 @@ def main():
         sys.stderr.write(e.strerror)
 
 
-def load_vocabulary(fp, j2env) -> Sequence:
+def load_vocabulary(j2env, *fps) -> Sequence:
     import json
-    partitions=json.load(fp)
+    partitions=list()
+    for fp in fps:
+        partitions +=json.load(fp)
+
     mapping_factory=templated_mapping(Jinja2Renderer(j2env, template_prefix='%%'))
     return CompoundMappingSequence(mapping_factory, *partitions)
 
@@ -91,5 +96,13 @@ def __parse_args() -> Mapping:
                         type=argparse.FileType('r'),
                         help='Path to the vocabulary file. Defaults to the builtin us_top1000 vocabulary. This setting overrides the vocabulary selection via the environment variable FAKR_VOCABULARY',
                         default=os.getenv(ENV_FAKR_VOCABUALRY, os.path.dirname(os.path.realpath(__file__)) + '/vocabularies/us_top1000.json'))
+
+    parser.add_argument('-m', '--mixin',
+                        metavar='FILENAME',
+                        type=argparse.FileType('r'),
+                        help='Additional vocabulary files to mix into the main vocabulary. This setting overrides the vocabulary selection via the environment variable FAKR_MIXIN',
+                        nargs='*',
+                        default=[open(v.strip(), 'r') for v in filter(None, os.getenv(ENV_FAKR_MIXIN, '').split(':'))]
+                        )
 
     return vars(parser.parse_args())
