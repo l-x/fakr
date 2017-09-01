@@ -61,7 +61,8 @@ Write data to a redis server:
 ::
 
   $ echo 'firstname \"{{firstname}}\" lastname \"{{lastname}}\" email \"{{email}}\"' \
-    | fakr | xargs -i redis-cli HMSET {}``
+    | fakr \
+    | xargs -i redis-cli HMSET {}``
 
 
 Templates
