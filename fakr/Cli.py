@@ -54,6 +54,8 @@ class Cli:
             exit(0)
         except jinja2.exceptions.TemplateError as e:
             sys.stderr.write('There was a problem with your templates: {}'.format(e.message))
+        except OSError as e:
+            sys.stderr.write(e.strerror)
 
     @staticmethod
     def __load_vocabulary(fp, j2env) -> Sequence:
