@@ -41,12 +41,15 @@ setup(
     tests_require=['nose2', 'cov-core'],
     test_suite='nose2.collector.collector',
     entry_points={
-        'console_scripts': ['{n}={n}.cli:main'.format(n=package_name)],
+        'console_scripts': [
+            '{n}={n}.cli:main'.format(n=package_name),
+            '{n}-builder={n}.vocabulary_builder:main'.format(n=package_name),
+        ],
     },
     include_package_data=True,
     zip_safe=False,
     packages=[package_name],
     package_dir={package_name: package_name + '/'},
-    package_data={package_name: ['vocabularies/*.json']},
+    package_data={package_name: ['vocabularies/*.fakr']},
     download_url=download_url
 )

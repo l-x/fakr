@@ -1,1 +1,1 @@
-include fakr/vocabularies/*.json
+include fakr/vocabularies/*.fakr

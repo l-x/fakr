@@ -1,0 +1,4 @@
+email
+%%{{username}}@{{domain}}
+%%{{lastname|lower|ascii}}@{{domain}}
+%%{{firstname|lower|ascii}}.{{lastname|lower|ascii}}@{{domain}}

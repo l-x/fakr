@@ -42,10 +42,10 @@ def main():
 
 
 def load_vocabulary(j2env, *fps) -> Sequence:
-    import json
+    from .vocabulary import read
     partitions=list()
     for fp in fps:
-        partitions +=json.load(fp)
+        partitions +=read(fp)
 
     mapping_factory=templated_mapping(Jinja2Renderer(j2env, template_prefix='%%'))
     return CompoundMappingSequence(mapping_factory, *partitions)
@@ -93,9 +93,9 @@ def __parse_args() -> Mapping:
 
     parser.add_argument('-v', '--vocabulary',
                         metavar='FILENAME',
-                        type=argparse.FileType('r'),
-                        help='Path to the vocabulary file. Defaults to the builtin us_top1000 vocabulary. This setting overrides the vocabulary selection via the environment variable FAKR_VOCABULARY',
-                        default=os.getenv(ENV_FAKR_VOCABUALRY, os.path.dirname(os.path.realpath(__file__)) + '/vocabularies/us_top1000.json'))
+                        type=argparse.FileType('rb'),
+                        help='Path to the vocabulary file. Defaults to the builtin us_top1000.fakr vocabulary. This setting overrides the vocabulary selection via the environment variable FAKR_VOCABULARY',
+                        default=os.getenv(ENV_FAKR_VOCABUALRY, os.path.dirname(os.path.realpath(__file__)) + '/vocabularies/us_top1000.fakr'))
 
     parser.add_argument('-m', '--mixin',
                         metavar='FILENAME',
