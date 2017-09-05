@@ -7,7 +7,7 @@ from .CompoundMappingSequence import CompoundMappingSequence
 from .TemplatedMapping import templated_mapping
 from .jinja import environment
 import jinja2.exceptions
-from . import version, package_name
+from . import version, package_name, default_vocabulary
 from .Generator import Generator
 
 ENV_FAKR_VOCABUALRY= 'FAKR_VOCABULARY'
@@ -55,8 +55,7 @@ def __parse_args() -> Mapping:
     parser = argparse.ArgumentParser(
         prog=package_name,
         description='''
-            {} reads a jinja2 template from STDIN or from a file, renders it with random values from the
-            builtin us_top1000 vocabulary or from a custom file and writes the result to STDOUT
+            {} reads a jinja2 template from STDIN or from a file, renders it with random values from a vocabulary or from a custom file and writes the result to STDOUT
         '''.format(package_name)
     )
 
@@ -94,8 +93,8 @@ def __parse_args() -> Mapping:
     parser.add_argument('-v', '--vocabulary',
                         metavar='FILENAME',
                         type=argparse.FileType('rb'),
-                        help='Path to the vocabulary file. Defaults to the builtin us_top1000.fakr vocabulary. This setting overrides the vocabulary selection via the environment variable FAKR_VOCABULARY',
-                        default=os.getenv(ENV_FAKR_VOCABUALRY, os.path.dirname(os.path.realpath(__file__)) + '/vocabularies/us_top1000.fakr'))
+                        help='Path to the vocabulary file. Defaults to the builtin vocabulary "{}". This setting overrides the vocabulary selection via the environment variable FAKR_VOCABULARY'.format(os.path.basename(default_vocabulary)),
+                        default=os.getenv(ENV_FAKR_VOCABUALRY, default_vocabulary))
 
     parser.add_argument('-m', '--mixin',
                         metavar='FILENAME',

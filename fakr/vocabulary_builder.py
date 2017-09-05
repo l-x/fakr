@@ -2,7 +2,6 @@ import csv
 import argparse
 from fakr import version, package_name as main_package_name
 from collections import Mapping
-import sys
 
 package_name=main_package_name + '-builder'
 
