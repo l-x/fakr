@@ -8,4 +8,3 @@ author = 'l-x'
 author_email = 'l-x@mailbox.org'
 
 default_vocabulary=os.path.dirname(os.path.realpath(__file__)) + '/vocabularies/us_business.fakr'
-print(os.path.basename(default_vocabulary))

@@ -7,7 +7,7 @@ from .CompoundMappingSequence import CompoundMappingSequence
 from .TemplatedMapping import templated_mapping
 from .jinja import environment
 import jinja2.exceptions
-from . import version, package_name, default_vocabulary
+from . import version, package_name, default_vocabulary, vocabulary
 from .Generator import Generator
 
 ENV_FAKR_VOCABUALRY= 'FAKR_VOCABULARY'
@@ -18,7 +18,7 @@ def main():
     j2env = environment()
     args = __parse_args()
 
-    vocabulary_fps=[args['vocabulary']] + args['mixin']
+    vocabulary_fps=args['vocabulary'] + args['mixin']
     vocabulary = load_vocabulary(j2env, *vocabulary_fps)
 
     if args['list'] is True:
@@ -26,7 +26,12 @@ def main():
         exit(0)
 
     if args['info'] is True:
-        print('{} unique entries in\n{}'.format(len(vocabulary), '\n'.join(['\t- ' + os.path.realpath(fp.name) for fp in vocabulary_fps])))
+        try:
+            voclen=len(vocabulary)
+        except OverflowError:
+            voclen='Too many'
+
+        print('{} unique entries in\n{}'.format(voclen, '\n'.join(['\t- ' + os.path.realpath(fp.name) for fp in vocabulary_fps])))
         exit(0)
 
     try:
@@ -42,10 +47,9 @@ def main():
 
 
 def load_vocabulary(j2env, *fps) -> Sequence:
-    from .vocabulary import read
     partitions=list()
     for fp in fps:
-        partitions +=read(fp)
+        partitions+=vocabulary.read(fp)
 
     mapping_factory=templated_mapping(Jinja2Renderer(j2env, template_prefix='%%'))
     return CompoundMappingSequence(mapping_factory, *partitions)
@@ -92,16 +96,38 @@ def __parse_args() -> Mapping:
 
     parser.add_argument('-v', '--vocabulary',
                         metavar='FILENAME',
-                        type=argparse.FileType('rb'),
+                        action=VocabularyFileAction,
                         help='Path to the vocabulary file. Defaults to the builtin vocabulary "{}". This setting overrides the vocabulary selection via the environment variable FAKR_VOCABULARY'.format(os.path.basename(default_vocabulary)),
-                        default=os.getenv(ENV_FAKR_VOCABUALRY, default_vocabulary))
+                        default=VocabularyFileAction.openFiles(os.getenv(ENV_FAKR_VOCABUALRY, default_vocabulary)))
 
     parser.add_argument('-m', '--mixin',
                         metavar='FILENAME',
-                        type=argparse.FileType('r'),
+                        action=VocabularyFileAction,
                         help='Additional vocabulary files to mix into the main vocabulary. This setting overrides the vocabulary selection via the environment variable FAKR_MIXIN',
                         nargs='*',
-                        default=[open(v.strip(), 'r') for v in filter(None, os.getenv(ENV_FAKR_MIXIN, '').split(':'))]
+                        default=VocabularyFileAction.openFiles(*[v.strip() for v in filter(None, os.getenv(ENV_FAKR_MIXIN, '').split(':'))])
                         )
 
     return vars(parser.parse_args())
+
+
+class VocabularyFileAction(argparse.Action):
+
+    @staticmethod
+    def openFiles(*files: str, resolver: callable = lambda v: v) -> list:
+        fps=[]
+        for file in files:
+            try:
+                fp = open(resolver(file), 'rb')
+                fps.append(fp)
+            except FileNotFoundError as e:
+                print('{}: {}'.format(file, e.strerror))
+                exit(1)
+
+        return fps
+
+    def __call__(self, parser, args, values, option_string=None):
+        if type(values) is str:
+            values=[values]
+
+        setattr(args, self.dest, self.openFiles(*values, resolver=vocabulary.search))
