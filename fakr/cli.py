@@ -22,7 +22,7 @@ def main():
     vocabulary = load_vocabulary(j2env, *vocabulary_fps)
 
     if args['list'] is True:
-        print('\n'.join(sorted([v for v in list(vocabulary[0].keys()) + ['row']])))
+        sys.stdout.write('\n'.join(sorted([v for v in list(vocabulary[0].keys()) + ['row']])) + '\n')
         exit(0)
 
     if args['info'] is True:
@@ -31,7 +31,7 @@ def main():
         except OverflowError:
             voclen='Too many'
 
-        print('{} unique entries in\n{}'.format(voclen, '\n'.join(['\t- ' + os.path.realpath(fp.name) for fp in vocabulary_fps])))
+        sys.stdout.write('{} unique entries in\n{}\n'.format(voclen, '\n'.join(['\t- ' + os.path.realpath(fp.name) for fp in vocabulary_fps])))
         exit(0)
 
     try:
