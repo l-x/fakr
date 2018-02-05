@@ -3,6 +3,7 @@ import unidecode
 import random
 import uuid
 import time
+import hashlib
 
 custom_filters = dict(
     ascii=lambda value: unidecode.unidecode(str(value)),
@@ -11,6 +12,7 @@ custom_filters = dict(
     rjust=lambda value, width, fillchar = ' ': str(value).rjust(width, fillchar),
     ljust=lambda value, width, fillchar = ' ': str(value).ljust(width, fillchar),
     center=lambda value, width, fillchar=' ': str(value).center(width, fillchar),
+    hash=lambda value, algo: hashlib.new(algo, str(value).encode()).hexdigest(),
 )
 
 custom_globals=dict(

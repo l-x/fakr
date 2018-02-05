@@ -80,6 +80,7 @@ Custom filters:
 - ``rjust``: Right-justifies the value to the given with (i. e. ``{{company|rjust(40)}}``)
 - ``ljust``: Left-justifies the value to the given with (i. e. ``{{company|ljust(40)}}``)
 - ``center``: Centers the value in width (i. e. ``{{company|center(40)}}``)
+- ``hash``: Calculates the hash with a given hashing algo (i. e. `{{email|hash('md5')}}`)
 
 Custom functions:
 
